@@ -1,5 +1,5 @@
 from sched import scheduler
-import time
+import time,os
 from fastapi import FastAPI
 import uvicorn
 from dbmanager import db_connect 
@@ -15,22 +15,43 @@ def import_data():
 
 
 @app.get("/build")
-def build_results():
-    df = {"key":"value"}
-    df = pandas.read_csv("api.csv").to_dict(orient='records')
+def build_results(new_file):
+    df = pandas.read_csv(new_file).to_dict(orient='records')
 
+    insert_data = db['mycollection'].insert_one(dict(df))
+
+    os.remove(new_file)
     return df
+  
+def check_and_process_files():
+    
+    for filename in os.listdir(os.getcwd()):
+        if filename.endswith(".csv"):  # Change the file extension as needed
+            print('newfile found')
+            file_path = os.path.join(os.getcwd(), filename)
+            build_results(file_path)
+
+
+
+while True:
+    time.sleep(300)
+    check_and_process_files()
+
+        
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app",port=8001,reload=True)
 
-@app.get("/buildtxt")
-def check_for_new_files(): 
- def save_data_to_mongodb_and_remove(file_path):
-    while True:
-        scheduler.run_pending()
-        time.sleep(1)
-    
+
 
     
 

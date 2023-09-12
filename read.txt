@@ -1,0 +1,5 @@
+check newfile in project folder
+retrive data from file and saveit into mongodb 
+remove the file 
+write a scheduler which runs the above functions every 10 min
+now need to check file in s3 bucket insteed of cwd
